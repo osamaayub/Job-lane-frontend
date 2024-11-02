@@ -1,8 +1,7 @@
 /** @type {import('tailwindcss').Config} */
-/** @type {import('tailwindcss').Config} */
 const colors = require('tailwindcss/colors');
 
-export default {
+module.exports = {
   content: [
     './src/**/*.{js,jsx,ts,tsx}', // Adjust paths as necessary for your project
     './public/index.html',
