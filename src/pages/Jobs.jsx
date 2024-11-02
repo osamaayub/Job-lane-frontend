@@ -5,23 +5,21 @@ import { FiSearch } from 'react-icons/fi';
 import { Loader } from '../components/Loader';
 import JobCard from '../components/JobCard';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllJobs, getSingleJob } from '../actions/JobActions';
+import { getAllJobs, getSingleJob } from '../actions/JobActions'; // Updated import
 import { RxCross2 } from 'react-icons/rx';
 import useIsMobile from '../hooks/useIsMobile';
-import { companyData, data } from "../constants";
-import { Slider } from "@mantine/core";
-
+import { companyData, data } from '../constants'; // Ensure you have companyData and data exported correctly
+import { Slider } from '@mantine/core';
 
 const Jobs = () => {
-
   const dispatch = useDispatch();
-  const { allJobs, loading } = useSelector(state => state.job);
+  const { allJobs, loading } = useSelector((state) => state.job);
 
   const [baseJobs, setBaseJobs] = useState([]);
   const [jobs, setJobs] = useState([]);
-  const [category, setCategory] = useState("");
-  const [company, setCompany] = useState("");
-  const [search, setSearch] = useState("");
+  const [category, setCategory] = useState('');
+  const [company, setCompany] = useState('');
+  const [search, setSearch] = useState('');
   const [salary, setSalary] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -41,11 +39,11 @@ const Jobs = () => {
       e.title.toLowerCase().includes(search.toLowerCase().trim())
     );
 
-    setJobs(search === "" ? baseJobs : searchArr);
+    setJobs(search === '' ? baseJobs : searchArr);
   }, [search, baseJobs]);
 
   const leftFilter = (jobsList) => {
-    if (category === "") {
+    if (category === '') {
       setJobs(allJobs);
       return;
     }
@@ -56,7 +54,7 @@ const Jobs = () => {
   };
 
   const removeLeftFilter = () => {
-    setCategory("");
+    setCategory('');
     setJobs(allJobs);
     setCurrentPage(1);
   };
@@ -66,11 +64,11 @@ const Jobs = () => {
       e.title.toLowerCase().includes(search.toLowerCase())
     );
 
-    setJobs(search !== "" ? searchArr : baseJobs);
+    setJobs(search !== '' ? searchArr : baseJobs);
   };
 
   const rightFilter = (jobsList) => {
-    if (company === "") {
+    if (company === '') {
       setJobs(allJobs);
       return;
     }
@@ -81,7 +79,7 @@ const Jobs = () => {
   };
 
   const removeRightFilter = () => {
-    setCompany("");
+    setCompany('');
     setJobs(allJobs);
     setCurrentPage(1);
   };
@@ -90,10 +88,10 @@ const Jobs = () => {
   const itemsPerPage = 5;
   const totalPageCount = Math.ceil(jobs.length / itemsPerPage);
   const handleNextPage = () => {
-    setCurrentPage(prevPage => Math.min(prevPage + 1, totalPageCount));
+    setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPageCount));
   };
   const handlePrevPage = () => {
-    setCurrentPage(prevPage => Math.max(prevPage - 1, 1));
+    setCurrentPage((prevPage) => Math.max(prevPage - 1, 1));
   };
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -122,20 +120,20 @@ const Jobs = () => {
   return (
     <>
       <MetaData title="Jobs" />
-      <div className='bg-gray-950 min-h-screen pt-14 sm:px-20 px-3 text-white'>
+      <div className="bg-gray-950 min-h-screen pt-14 sm:px-20 px-3 text-white">
         {loading ? <Loader /> :
           <>
-            <div className='flex-col flex justify-center items-center w-full'>
-              <div className='text-center pt-8 sm:text-3xl text-2xl font-medium'>
+            <div className="flex-col flex justify-center items-center w-full">
+              <div className="text-center pt-8 sm:text-3xl text-2xl font-medium">
                 <p>Find your dream job now</p>
               </div>
 
-              <div className='flex w-full flex-col sm:flex-row gap-4 py-4'>
+              <div className="flex w-full flex-col sm:flex-row gap-4 py-4">
 
                 {/* Left section for category filter */}
-                <div className='flex-1  p-4 rounded-md'>
-                  <p className='text-lg flex justify-center  underline underline-offset-4'>Categories</p>
-                  <ul className='flex pt-3 items-center mb-3 flex-col gap-3'>
+                <div className="flex justify-start flex-col p-4 rounded w-1/4">
+                  <p className="text-xl underline underline-offset-4">Categories</p>
+                  <ul className="flex pt-3 items-start mb-3 flex-col gap-3">
                     {data.map((e, i) => (
                       <li
                         key={i}
@@ -146,60 +144,60 @@ const Jobs = () => {
                       </li>
                     ))}
                   </ul>
-                  <div className='flex flex-col justify-center items-center pt-5'>
-                    <p className='underline-offset-4 text-lg pb-3'>Salary</p>
+                  <div className="flex  flex-col justify-start items-start pt-5">
+                    <p className="underline underline-offset-4 text-lg pb-3">Salary</p>
 
                     <Slider
-                      color='indigo'
-                      className='outline-none w-32'
+                      color="indigo"
+                      className="outline-none w-40"
                       value={salary}
                       onChange={setSalary}
                       min={0}
                       max={200000}
+                      label={salary}
                     />
                   </div>
-                  <div className='flex flex-col gap-4  pt-5'>
-                    <button onClick={() => leftFilter(jobs)} className='blueCol  px-1 py-1 text-sm'>Apply Filter</button>
-                    <button onClick={removeLeftFilter} className='blueCol px-1 py-2 text-xs'>Remove Filter</button>
+                  <div className="flex flex-col gap-4 pt-5">
+                    <button onClick={() => leftFilter(jobs)} className="blueCol px-1 py-1 text-sm">Apply Filter</button>
+                    <button onClick={removeLeftFilter} className="blueCol px-1 py-2 text-xs">Remove Filter</button>
                   </div>
                 </div>
 
                 {/* Center section for job search input and job cards */}
-                <div className='flex-1 p-4'>
-                  <div className='flex justify-center items-center mb-4'>
-                    <div className='bg-white flex w-full rounded-md overflow-hidden'>
-                      <div className='flex justify-center items-center pl-2 text-black'> <FiSearch size={19} /> </div>
+                <div className="flex-1 p-4">
+                  <div className="flex justify-center items-center mb-4">
+                    <div className="bg-white flex w-full rounded-md overflow-hidden">
+                      <div className="flex justify-center items-center pl-2 text-black"><FiSearch size={19} /></div>
                       <input
                         value={search}
-                        placeholder='Search Jobs '
+                        placeholder="Search Jobs "
                         onChange={(e) => setSearch(e.target.value)}
                         type="text"
-                        className='outline-none bold-placeholder  text-black px-2 pl-3 h-10 w-full'
+                        className="outline-none bold-placeholder text-black px-2 pl-3 h-10 w-full"
                       />
-                      <div className='text-black items-center flex justify-center px-2'>
+                      <div className="text-black items-center flex justify-center px-2">
                         <RxCross2 onClick={() => setSearch("")} size={19} className={`cursor-pointer ${search.length !== 0 ? "flex" : "hidden"}`} />
                       </div>
-                      <button onClick={searchHandler} className='blueCol sm:text-sm text-xs px-4 h-10'>Search</button>
+                      <button onClick={searchHandler} className="blueCol sm:text-sm text-xs px-4 h-10">Search</button>
                     </div>
                   </div>
 
-                  <div className='flex flex-col  sm:overflow-y-auto sm:max-h-[30em] gap-4'>
+                  <div className="flex flex-col sm:overflow-y-auto sm:max-h-[30em] gap-4">
                     {jobs && displayedData
-                      .filter(job => job?._id) // Ensure job has a valid _id
+                      .filter((job) => job?._id) // Ensure job has a valid _id
                       .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                       .map((job, i) => (
                         <JobCard key={job._id} onClick={() => dispatch(getSingleJob(job._id))} job={job} />
-                      ))
-                    }
+                      ))}
                     {jobs.length === 0 && (
-                      <div className='flex w-full justify-center items-center text-center pt-16 pb-12 sm:text-xl text-lg'>
+                      <div className="flex w-full justify-center items-center text-center pt-16 pb-12 sm:text-xl text-lg">
                         No Jobs available according to your preferences
                       </div>
                     )}
                   </div>
 
                   {/* Pagination */}
-                  <div className='flex justify-center mt-4'>
+                  <div className="flex justify-center mt-4">
                     <button onClick={handlePrevPage} disabled={currentPage === 1} className="bg-gray-900 border border-gray-700 hover:bg-gray-800 text-white font-bold py-2 px-4 mr-2">
                       Previous
                     </button>
@@ -211,22 +209,22 @@ const Jobs = () => {
                 </div>
 
                 {/* Right section for company filters */}
-                <div className='flex-1  p-4 rounded-md'>
-                  <p className='text-lg flex justify-center underline underline-offset-4'>Companies</p>
-                  <ul className='flex items-center pt-3 flex-col mb-3 gap-3'>
+                <div className="flex flex-col p-4 w-1/4">
+                  <p className="text-xl underline underline-offset-4">Companies</p>
+                  <ul className="flex pt-3 justify-start items-start mb-3 flex-col gap-3">
                     {companyData.map((e, i) => (
                       <li
                         key={i}
-                        onClick={() => setCompany(e.name)} // Change here to access 'name' property
+                        onClick={() => setCompany(e.name)}
                         className={`hover:text-yellow-600 cursor-pointer ${company === e.name ? "text-yellow-600" : ""}`}
                       >
-                        {e.name} {/* Render the company name */}
+                        {e.name}
                       </li>
                     ))}
                   </ul>
-                  <div className='flex flex-col  gap-4 pt-5'>
-                    <button onClick={() => rightFilter(jobs)} className='blueCol px-1 py-1 text-sm'>Apply Filter</button>
-                    <button onClick={removeRightFilter} className='blueCol px-1 py-2 text-xs'>Remove Filter</button>
+                  <div className="flex flex-col gap-4 pt-5">
+                    <button onClick={() => rightFilter(jobs)} className="blueCol px-1 py-1 text-sm">Apply Filter</button>
+                    <button onClick={removeRightFilter} className="blueCol px-1 py-2 text-xs">Remove Filter</button>
                   </div>
                 </div>
               </div>
