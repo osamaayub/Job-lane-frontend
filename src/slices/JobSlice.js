@@ -1,6 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
+import {
+    createJobPost,
+    getAllJobs,
+    getSavedJobs,
+    getSingleJob,
+    saveJob
+} from "../actions/JobActions";
 
-
+// Initial State
 const initialState = {
     loading: false,
     saveJobLoading: false,
@@ -9,10 +16,7 @@ const initialState = {
         __v: 0,
         _id: "",
         category: "",
-        companyLogo: {
-            public_id: "",
-            url: ""
-        },
+        companyLogo: { public_id: "", url: "" },
         companyName: "",
         createdAt: "",
         description: "",
@@ -27,83 +31,77 @@ const initialState = {
     },
     savedJobs: [],
     allJobs: []
-}
+};
 
+// Job Slice
 const JobSlice = createSlice({
     name: 'Job',
-    initialState: initialState,
-    savedJobs: [],
-    allJobs: [],
-    reducers: {
-        newPostRequest: (state) => {
+    initialState,
+    reducers: {},
+    extraReducers: (builder) => {
+        // Handle createJobPost
+        builder.addCase(createJobPost.pending, (state) => {
             state.loading = true;
-        },
-        newPostSuccess: (state) => {
+        });
+        builder.addCase(createJobPost.fulfilled, (state) => {
             state.loading = false;
-        },
-        newPostFail: (state, action) => {
+        });
+        builder.addCase(createJobPost.rejected, (state, action) => {
             state.loading = false;
-            state.error = action.payload
-        },
+            state.error = action.payload;
+        });
 
-        allJobsRequest: (state) => {
+        // Handle getAllJobs
+        builder.addCase(getAllJobs.pending, (state) => {
             state.loading = true;
-        },
-        allJobsSuccess: (state, action) => {
+        });
+        builder.addCase(getAllJobs.fulfilled, (state, action) => {
             state.loading = false;
             state.allJobs = action.payload;
-        },
-        allJobsFail: (state, action) => {
+        });
+        builder.addCase(getAllJobs.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload;
-        },
+        });
 
-
-        jobDetailsRequest: (state) => {
+        // Handle getJobDetails
+        builder.addCase(getSingleJob.pending, (state) => {
             state.loading = true;
-        },
-        jobDetailsSuccess: (state, action) => {
+        });
+        builder.addCase(getSingleJob.fulfilled, (state, action) => {
             state.loading = false;
             state.jobDetails = action.payload;
-        },
-        jobDetailsFail: (state, action) => {
+        });
+        builder.addCase(getSingleJob.rejected, (state, action) => {
             state.loading = false;
             state.error = action.payload;
-        },
+        });
 
-        jobSaveRequest: (state) => {
+        // Handle saveJob
+        builder.addCase(saveJob.pending, (state) => {
             state.saveJobLoading = true;
-        },
-        jobSaveSuccess: (state) => {
+        });
+        builder.addCase(saveJob.fulfilled, (state) => {
             state.saveJobLoading = false;
-        },
-        jobSaveFail: (state, action) => {
+        });
+        builder.addCase(saveJob.rejected, (state, action) => {
             state.saveJobLoading = false;
             state.error = action.payload;
-        },
+        });
 
-
-        // eslint-disable-next-line no-unused-vars
-        getSavedJobsRequest: (state, action) => {
-            state.loading = true
-        },
-        getSavedJobsSuccess: (state, action) => {
-            state.loading = false
-            state.savedJobs = action.payload.savedJob
-        },
-        getSavedJobsFail: (state, action) => {
-            state.loading = false
+        // Handle getSavedJobs
+        builder.addCase(getSavedJobs.pending, (state) => {
+            state.loading = true;
+        });
+        builder.addCase(getSavedJobs.fulfilled, (state, action) => {
+            state.loading = false;
+            state.savedJobs = action.payload.savedJob;
+        });
+        builder.addCase(getSavedJobs.rejected, (state, action) => {
+            state.loading = false;
             state.error = action.payload;
-        }
-
+        });
     }
+});
 
-})
-
-export const { newPostRequest, newPostSuccess, newPostFail, allJobsRequest, allJobsSuccess, allJobsFail,
-    jobDetailsRequest, jobDetailsSuccess, jobDetailsFail,
-    jobSaveRequest, jobSaveSuccess, jobSaveFail,
-    getSavedJobsRequest, getSavedJobsSuccess, getSavedJobsFail
-} = JobSlice.actions;
-
-export default JobSlice.reducer
+export default JobSlice.reducer;
