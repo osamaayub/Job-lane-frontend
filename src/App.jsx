@@ -1,10 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
-import { useEffect } from 'react'
-import {
-  Navbar,
-  Footer,
-} from "./components";
+import { useEffect ,lazy,Suspense} from 'react';
+const Navbar=lazy(()=>import('./components/Navbar'));
+const Footer=lazy(()=>import('./components/Footer'));
+import { ErrorBoundary } from "react-error-boundary";
 
 
 import ScrollToTopWhenRouteChanges from "./components/ScrollToTopOnRouteChange";
@@ -18,6 +17,22 @@ import { logOrNot, Me } from './actions/UserActions'
 import { getAllJobs } from './actions/JobActions'
 import AppRoutes from './routes';
 
+
+
+
+
+const FallBackComponent = ({ error, resetErrorBoundary }) => {
+  return (
+    <div className="p-20 text-center text-red-500">
+      <p>
+        {error.message}
+      </p>
+      <button onClick={resetErrorBoundary} className="p-10 mt-10">
+        Try Again
+      </button>
+    </div>
+  );
+};
 
 
 
@@ -50,27 +65,29 @@ const App = () => {
 
   return (
     <>
-      <ScrollToTopWhenRouteChanges />
-      <Navbar />
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="dark"
-        className="mt-14 font-bold  "
+      <ErrorBoundary fallback={<FallBackComponent/>}>
+      <Suspense fallback={<div>Loading...</div>}>
+        <ScrollToTopWhenRouteChanges />
+        <Navbar />
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+          className="mt-14 font-bold"
 
-      />
-      <AppRoutes />
+        />
+        <AppRoutes />
 
-      <Footer />
-
-
+        <Footer />
+        </Suspense>
+      </ErrorBoundary>
 
 
     </>
