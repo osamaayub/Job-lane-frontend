@@ -25,7 +25,7 @@ const FallBackComponent = ({ error, resetErrorBoundary }) => {
   return (
     <div className="p-20 text-center text-red-500">
       <p>
-        {error.message}
+        {error?.message}
       </p>
       <button onClick={resetErrorBoundary} className="p-10 mt-10">
         Try Again
