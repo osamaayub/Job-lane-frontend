@@ -15,7 +15,7 @@ export const createApplication =createAsyncThunk(
         }
 
 
-        const response = await axiosRequest.post(`/createApplication/${id}`, config);
+        const response = await axiosRequest.post(`/createApplication/${id}`,{}, config);
         toast.success("Applied Successfully");
         return response.data;
 
