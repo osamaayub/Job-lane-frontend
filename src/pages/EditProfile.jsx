@@ -1,11 +1,10 @@
-/* eslint-disable no-unused-vars */
 import { useState, useEffect } from 'react';
-import { Loader } from '../components/Loader';
-import { MetaData } from '../components/MetaData';
+import { Loader } from '../../components/Loader';
+import { MetaData } from '../../components/MetaData';
 import { AiOutlineMail } from 'react-icons/ai';
 import { MdPermIdentity, MdOutlineFeaturedPlayList } from 'react-icons/md';
 import { BsFileEarmarkText } from 'react-icons/bs';
-import { updateProfile, Me as ME } from '../actions/UserActions';
+import { updateProfile, Me as ME } from '../../actions/UserActions';
 import { CgProfile } from 'react-icons/cg';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -13,92 +12,84 @@ const EditProfile = () => {
     const dispatch = useDispatch();
     const { loading, me } = useSelector(state => state.user);
 
-    const [name, setName] = useState(me ? me.name : '');
-    const [email, setEmail] = useState(me ? me.email : '');
-    const [skills, setSkills] = useState(me ? me.skills : []);
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [skills, setSkills] = useState('');
     const [avatar, setAvatar] = useState("");
     const [avatarName, setAvatarName] = useState("");
     const [resume, setResume] = useState("");
     const [resumeName, setResumeName] = useState("");
 
     const avatarChange = (e) => {
-        if (e.target.name === "avatar") {
-            const reader = new FileReader();
-            reader.onload = () => {
-                if (reader.readyState === 2) {
-                    setAvatar(reader.result);
-                    setAvatarName(e.target.files[0].name);
-                }
-            };
-
-            reader.readAsDataURL(e.target.files[0]);
+        const file = e.target.files[0];
+        if (file) {
+            if (!file.type.startsWith("image/")) {
+                alert("Please upload a valid image file.");
+                return;
+            }
+            setAvatar(file);
+            setAvatarName(file.name);
         }
     };
 
     const resumeChange = (e) => {
-        if (e.target.name === "resume") {
-            const reader = new FileReader();
-            reader.onload = () => {
-                if (reader.readyState === 2) {
-                    setResume(reader.result);
-                    setResumeName(e.target.files[0].name);
-                }
-            };
-
-            reader.readAsDataURL(e.target.files[0]);
+        const file = e.target.files[0];
+        if (file) {
+            if (file.type !== "application/pdf") {
+                alert("Please upload a PDF file.");
+                return;
+            }
+            setResume(file);
+            setResumeName(file.name);
         }
     };
 
     const editHandler = (e) => {
         e.preventDefault();
-        let skillArr = skills;
-        if (skills.constructor !== Array) {
-            skillArr = skills.split(",");
-        }
+        const skillArr = Array.isArray(skills) ? skills : skills.split(",").map(skill => skill.trim());
 
-        const data = {
-            newName: name,
-            newEmail: email,
-            newAvatar: avatar,
-            newResume: resume,
-            newSkills: skillArr,
-        };
-
-        dispatch(updateProfile(data));
+        const formData = new FormData();
+        formData.append("newName", name);
+        formData.append("newEmail", email);
+        formData.append("newSkills", JSON.stringify(skillArr));
+        formData.append("newAvatar", avatar);
+        formData.append("newResume", resume);
+        dispatch(updateProfile(formData));
     };
 
+    // Fetch user data when the component mounts
     useEffect(() => {
         if (!me) {
-            dispatch(ME());
-        }
-    }, [dispatch, me]);
-
-    useEffect(() => {
-        if (me) {
-            setName(me.name) || "";
-            setEmail(me.email) || "";
-            setSkills(me.skills) || "";
+            dispatch(ME()); // Dispatch the action to fetch the user data
         }
     }, [me]);
 
+    // Update local state when `me` is available
+    useEffect(() => {
+        if (me) {
+            setName(me.name || '');  // Ensure name is defined
+            setEmail(me.email || ''); // Ensure email is defined
+            setSkills(me.skills || ''); // Ensure skills are defined
+        }
+    }, [me]);
 
     return (
         <>
             <MetaData title="Edit Profile" />
-            <div className="bg-gray-950 min-h-screen pt-14  md:px-20 px-3  text-white">
-                {loading ? (
-                    <Loader />
-                ) : (
-                    <div>
-                        <div className=" flex justify-center w-full items-start pt-14">
+            <div className="bg-gray-950 min-h-screen pt-14 md:px-20 px-3 text-white">
+                <div>
+                    {loading ? (
+                        <Loader />
+                    ) : (
+                        <div className="flex justify-center w-full items-start pt-14">
                             <form
                                 onSubmit={editHandler}
-                                className="flex flex-col md:w-1/3 shadow-gray-700  w-full md:mx-0 mx-3 pb-28"
-                                action=""
+                                encType="multipart/form-data"
+                                className="flex flex-col md:w-1/3 shadow-gray-700 w-full md:mx-0 mx-3 pb-28"
                             >
-                                <div className="md:px-10 px-7 pb-6 w-full shadow-sm shadow-gray-700 border-gray-700 border pt-5  flex flex-col gap-4">
+                                <div className="md:px-10 px-7 pb-6 w-full shadow-sm shadow-gray-700 border-gray-700 border pt-5 flex flex-col gap-4">
                                     <div className="text-center">
-                                        <p className="text-4xl  font-semibold">Edit Profile</p>
+                                        <p className="text-4xl font-semibold">Edit Profile</p>
                                     </div>
 
                                     {/* Name */}
@@ -156,7 +147,7 @@ const EditProfile = () => {
                                                 placeholder="Profile"
                                                 accept="image/*"
                                                 type="file"
-                                                className="outline-none  w-full hidden text-black px-1 pr-3 py-2"
+                                                className="outline-none w-full hidden text-black px-1 pr-3 py-2"
                                             />
                                         </div>
                                         <p className="bg-gray-950 text-white text-xs">
@@ -187,7 +178,7 @@ const EditProfile = () => {
                                                 placeholder="Resume"
                                                 id="resume"
                                                 name="resume"
-                                                accept="image/*"
+                                                accept=".pdf"
                                                 type="file"
                                                 className="outline-none hidden w-full text-black px-1 pr-3 py-2"
                                             />
@@ -205,7 +196,7 @@ const EditProfile = () => {
                                         <textarea
                                             value={skills}
                                             onChange={(e) => setSkills(e.target.value)}
-                                            placeholder="Skills"
+                                            placeholder="Enter Your Skills"
                                             type="text"
                                             className="outline-none w-full text-black bold-placeholder px-1 pr-3 py-2"
                                         />
@@ -219,10 +210,11 @@ const EditProfile = () => {
                                 </div>
                             </form>
                         </div>
-                    </div>
-                )}
+                    )}
+                </div>
             </div>
         </>
     );
 };
+
 export default EditProfile;
