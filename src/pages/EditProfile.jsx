@@ -22,11 +22,8 @@ const EditProfile = () => {
 
     const avatarChange = (e) => {
         const file = e.target.files[0];
-        if (file) {
-            if (!file.type.startsWith("image/")) {
-                alert("Please upload a valid image file.");
-                return;
-            }
+        if (e.target.files && e .target.files[0]) {
+
             setAvatar(file);
             setAvatarName(file.name);
         }
@@ -34,11 +31,7 @@ const EditProfile = () => {
 
     const resumeChange = (e) => {
         const file = e.target.files[0];
-        if (file) {
-            if (file.type !== "application/pdf") {
-                alert("Please upload a PDF file.");
-                return;
-            }
+        if (e.target.files && e.target.files[0]) {
             setResume(file);
             setResumeName(file.name);
         }
@@ -70,6 +63,8 @@ const EditProfile = () => {
             setName(me.name || '');  // Ensure name is defined
             setEmail(me.email || ''); // Ensure email is defined
             setSkills(me.skills || ''); // Ensure skills are defined
+            setAvatar(me.avatar || '')//Ensure avatar is defined
+            setResume(me.resume|| '')//Ensure resume is defined
         }
     }, [me]);
 
